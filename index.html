@@ -352,12 +352,12 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
     <div class="gap-grid" id="gap-grid"></div>
     <div class="reflection-box">
       <div class="rb-label">Reflection</div>
-      <div class="rb-q">Based on this session, what is the one thing you would change before attempting the next scenario?</div>
+      <div class="rb-q">After completing this exercise, do you feel more confident creating travel plans that anticipate an executive's needs? Why or why not?</div>
       <textarea class="reflection-input" placeholder="Write your reflection here..."></textarea>
     </div>
     <div class="next-card">
-      <div class="nc-label">What comes next</div>
-      <p>The next scenario introduces a live disruption — a flight cancellation and a venue change on day one. You will need to respond in real time, applying everything from this session. The executives who score highest are those who planned for what could go wrong before it did.</p>
+      <div class="nc-label">Thank you!</div>
+      <p>Thank you for completing this session. Use what you practiced today to become a stronger, more proactive partner for your executive. The difference between functional and exceptional lives in the details — and now you know where to look.</p>
     </div>
     <div class="btn-row">
       <button class="vt-btn-outline" onclick="goTo(3)">← Back</button>
@@ -420,7 +420,7 @@ async function gradeRevision() {
     document.getElementById('ai-result').classList.add('visible');
     document.getElementById('next-btn').style.display = 'inline-block';
   } catch(e) {
-    document.getElementById('ai-result-body').innerHTML = '<p style="color:#E24B4A;font-size:13px;font-weight:600;">Error: ' + e.message + '</p>';
+    document.getElementById('ai-result-body').innerHTML = '<p style="color:#E24B4A;font-size:13px;font-weight:600;">Unable to connect to the AI grader. Please try again.</p>';
     document.getElementById('ai-result').classList.add('visible');
   }
   document.getElementById('loading').classList.remove('visible');
