@@ -137,8 +137,9 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
 <div class="vt-progress">
   <div class="vt-step active" id="step1">1. Context</div>
   <div class="vt-step" id="step2">2. Review sample</div>
-  <div class="vt-step" id="step3">3. Improve your work</div>
-  <div class="vt-step" id="step4">4. Gap summary</div>
+  <div class="vt-step" id="step3">3. Reflect</div>
+  <div class="vt-step" id="step4">4. Improve your work</div>
+  <div class="vt-step" id="step5">5. Gap summary</div>
 </div>
 
 <div class="vt-container">
@@ -155,7 +156,7 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
 
     I've decided to attend the SaaS Summit in Denver from February 20–23, and I'd also like to fit in a visit to one of our key partners, Rocket Labs, while I'm there. Can you handle all the arrangements?<br><br>
     I'll need flights (premium economy or business), a hotel near the convention center, ground transportation, summit registration, and a meeting with Rocket Labs on either February 21 or 22. The budget for the trip is <strong>$3,800 USD</strong>.<br><br>
-    I'll forward you the event details by email. Let me know once you've got the itinerary together.<br><br>
+    I'll need to fly out on the 7th and return on the 10th. Let me know once you've got the itinerary together.<br><br>
 
     Thanks!<br>
     Chelsey
@@ -319,8 +320,37 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
       <button class="vt-btn" onclick="submitReview()">Save and continue →</button>
     </div>
   </div>
+<div class="screen" id="screen-3">
+  <div class="vt-eyebrow">Step 2 of 4 — Reflect</div>
+  <h1 class="vt-h1">Now, let's get back to being a superstar EA.</h1>
+  <p class="vt-lead">Before you revise your own work, take a moment to reflect on what you just reviewed. Use these prompts to guide your thinking — or your team discussion.</p>
 
-  <div class="screen" id="screen-3">
+  <div class="rubric-card">
+    <div class="rc-title">What did the EA do well?</div>
+    <div class="rc-desc">Identify at least one strength in the sample submission.</div>
+  </div>
+
+  <div class="rubric-card">
+    <div class="rc-title">What was missing or incomplete?</div>
+    <div class="rc-desc">Where did the itinerary fall short of what Chelsey actually needed?</div>
+  </div>
+
+  <div class="rubric-card">
+    <div class="rc-title">What should they have confirmed with Chelsey before booking?</div>
+    <div class="rc-desc">What ambiguities or gaps in the original request should have prompted a clarifying question?</div>
+  </div>
+
+  <div class="rubric-card">
+    <div class="rc-title">What would take this from functional to exceptional?</div>
+    <div class="rc-desc">Think about anticipation, contingency, communication, and value. What would a 5 look like?</div>
+  </div>
+
+  <div class="btn-row">
+    <button class="vt-btn-outline" onclick="goTo(2)">← Back</button>
+    <button class="vt-btn" onclick="goTo(4)">Continue to revise your work →</button>
+  </div>
+</div>
+  <div class="screen" id="screen-4">
     <div class="vt-eyebrow">Step 2 of 3 — Improve your work</div>
     <h1 class="vt-h1">Revise your original itinerary</h1>
     <p class="vt-lead">Using what you identified in the sample, revise your own submission. Address the gaps you spotted — especially around anticipation, contingency planning, budget clarity, and email conciseness. Paste your revised version below, then get AI feedback.</p>
@@ -339,13 +369,13 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
     </div>
     <div class="error-msg" id="revision-error">Please paste your revised itinerary before requesting feedback.</div>
     <div class="btn-row">
-      <button class="vt-btn-outline" onclick="goTo(2)">← Back</button>
+      <button class="vt-btn-outline" onclick="goTo(3)">← Back</button>
       <button class="vt-btn" id="grade-btn" onclick="gradeRevision()">Get AI feedback →</button>
       <button class="vt-btn" id="next-btn" style="display:none;" onclick="goToSummary()">See my gap summary →</button>
     </div>
   </div>
 
-  <div class="screen" id="screen-4">
+  <div class="screen" id="screen-5">
     <div class="vt-eyebrow">Step 3 of 3 — Gap summary</div>
     <h1 class="vt-h1">Where you stand</h1>
     <p class="vt-lead">Here is how your scores compare: how you graded the sample versus how AI graded your revision. The gap between them is where your growth is.</p>
@@ -360,7 +390,7 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
       <p>Thank you for completing this session. Use what you practiced today to become a stronger, more proactive partner for your executive. The difference between functional and exceptional lives in the details — and now you know where to look.</p>
     </div>
     <div class="btn-row">
-      <button class="vt-btn-outline" onclick="goTo(3)">← Back</button>
+      <button class="vt-btn-outline" onclick="goTo(4)">← Back</button>
     </div>
   </div>
 
@@ -374,7 +404,7 @@ const labels = { co: 'Customer obsession', uc: 'Communication clarity', bm: 'Bud
 function goTo(n) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + n).classList.add('active');
-  ['step1','step2','step3','step4'].forEach((id, i) => {
+  ['step1','step2','step3','step4','step5'].forEach((id, i) => {
     const el = document.getElementById(id);
     el.className = 'vt-step';
     if (i + 1 < n) el.classList.add('done');
@@ -438,7 +468,7 @@ function goToSummary() {
       <div class="gap-col-title">AI score on your revision</div>
       ${['co','uc','bm','ip'].map(k => `<div class="gap-item"><div class="gi-label">${labels[k]}</div><div class="gi-score ${aiScores[k] ? sc(aiScores[k]) : ''}">${aiScores[k] ? aiScores[k]+'/5' : '—'}</div><div class="gi-note">${aiScores[k] ? 'AI graded your revised submission' : 'Not yet graded'}</div></div>`).join('')}
     </div>`;
-  goTo(4);
+  goTo(5);
 }
 </script>
 </body>
