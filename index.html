@@ -49,7 +49,44 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
 .score-btn.selected-5 { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
 .notes-input { width: 100%; border: 1px solid #e0e0e8; border-radius: 7px; padding: 10px 12px; font-size: 13px; font-family: 'Open Sans', sans-serif; color: #333; resize: vertical; min-height: 60px; transition: border-color 0.15s; }
 .notes-input:focus { outline: none; border-color: #8015E8; }
-.ai-badge { display: inline-flex; align-items: center; gap: 7px; background: #f0e8fd; border: 1px solid #c89efa; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; color: #6a11c4; margin-bottom: 18px; letter-spacing: 0.3px; }
+
+.criteria-dropdown {
+  margin-bottom: 14px;
+  border: 1px solid #e0e0e8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.criteria-dropdown summary {
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8015E8;
+  background: #faf8ff;
+}
+
+.criteria-content {
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #555;
+  background: white;
+}
+  .criteria-content p {
+  margin-bottom: 10px;
+}
+
+.criteria-content p:last-child {
+  margin-bottom: 0;
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+  .ai-badge { display: inline-flex; align-items: center; gap: 7px; background: #f0e8fd; border: 1px solid #c89efa; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; color: #6a11c4; margin-bottom: 18px; letter-spacing: 0.3px; }
 .revision-area { width: 100%; border: 1px solid #e0e0e8; border-radius: 10px; padding: 16px 18px; font-size: 14px; font-family: 'Open Sans', sans-serif; color: #333; resize: vertical; min-height: 240px; line-height: 1.75; margin-bottom: 18px; transition: border-color 0.15s; }
 .revision-area:focus { outline: none; border-color: #8015E8; }
 .loading-indicator { display: none; align-items: center; gap: 12px; color: #8015E8; font-size: 14px; font-weight: 600; padding: 18px 0; }
@@ -126,8 +163,8 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
     </div>
     <div class="info-grid">
       <div class="info-card"><div class="ic-label">Budget</div><div class="ic-val">$3,800 USD maximum</div></div>
-      <div class="info-card"><div class="ic-label">Travel dates</div><div class="ic-val">Feb 7 → Feb 10</div></div>
       <div class="info-card"><div class="ic-label">Event</div><div class="ic-val">SaaS Summit, Denver · Feb 20–23</div></div>
+      <div class="info-card"><div class="ic-label">Priority Engagement</div><div class="ic-val">Rocket Labs meeting · Feb 22 or 22</div></div>
       <div class="info-card"><div class="ic-label">Deliverable</div><div class="ic-val">Itinerary + expense report + summary email</div></div>
     </div>
     <div class="btn-row">
@@ -164,46 +201,130 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
       <p>Best regards</p>
     </div>
     <div class="section-title">Your scores</div>
-    <div class="rubric-card">
-      <div class="rc-title">Customer obsession — ability to meet user requests</div>
-      <div class="rc-desc">Did the itinerary anticipate Chelsey's unspoken needs and optimise for her efficiency and comfort?</div>
-      <div class="score-btns">
-        <button class="score-btn" onclick="setScore('co',1,this)">1 — Needs improvement</button>
-        <button class="score-btn" onclick="setScore('co',3,this)">3 — Meets expectations</button>
-        <button class="score-btn" onclick="setScore('co',5,this)">5 — Exceeds expectations</button>
-      </div>
-      <textarea class="notes-input" id="notes-co" placeholder="What is missing or could be better?"></textarea>
-    </div>
-    <div class="rubric-card">
-      <div class="rc-title">Use your voice — communication clarity</div>
-      <div class="rc-desc">Is the summary email clear, concise, and easy to skim? Does it preempt follow-up questions?</div>
-      <div class="score-btns">
-        <button class="score-btn" onclick="setScore('uc',1,this)">1 — Needs improvement</button>
-        <button class="score-btn" onclick="setScore('uc',3,this)">3 — Meets expectations</button>
-        <button class="score-btn" onclick="setScore('uc',5,this)">5 — Exceeds expectations</button>
-      </div>
-      <textarea class="notes-input" id="notes-uc" placeholder="What would you change about the email?"></textarea>
-    </div>
-    <div class="rubric-card">
-      <div class="rc-title">Budget management</div>
-      <div class="rc-desc">Did the submission stay within $3,800 with a clear breakdown and maximise value?</div>
-      <div class="score-btns">
-        <button class="score-btn" onclick="setScore('bm',1,this)">1 — Needs improvement</button>
-        <button class="score-btn" onclick="setScore('bm',3,this)">3 — Meets expectations</button>
-        <button class="score-btn" onclick="setScore('bm',5,this)">5 — Exceeds expectations</button>
-      </div>
-      <textarea class="notes-input" id="notes-bm" placeholder="Is the budget breakdown complete and well-structured?"></textarea>
-    </div>
-    <div class="rubric-card">
-      <div class="rc-title">Itinerary planning — technical execution</div>
-      <div class="rc-desc">Is the itinerary complete, accurate, and proactive about potential disruptions?</div>
-      <div class="score-btns">
-        <button class="score-btn" onclick="setScore('ip',1,this)">1 — Needs improvement</button>
-        <button class="score-btn" onclick="setScore('ip',3,this)">3 — Meets expectations</button>
-        <button class="score-btn" onclick="setScore('ip',5,this)">5 — Exceeds expectations</button>
-      </div>
-      <textarea class="notes-input" id="notes-ip" placeholder="What details are missing? Is there a contingency plan?"></textarea>
-    </div>
+
+<div class="rubric-card">
+  <div class="rc-title">Customer obsession — ability to meet user requests</div>
+  <div class="rc-desc">
+    Did the itinerary anticipate Chelsey's unspoken needs and optimise for her efficiency and comfort?
+  </div>
+
+  <details class="criteria-dropdown">
+    <summary>What do the scores mean?</summary>
+    <div class="criteria-content">
+      <p><strong>1 — Needs Improvement</strong><br>
+      Misses executive preferences, overlooks important details, or requires significant follow-up from the executive.</p>
+
+  <p><strong>3 — Meets Expectations</strong><br>
+  Addresses the executive's stated needs and provides the information required for the trip.</p>
+
+  <p><strong>5 — Exceeds Expectations</strong><br>
+  Anticipates unspoken needs, minimizes executive effort, and optimizes for comfort, efficiency, and convenience.</p>
+</div>
+
+  </details>
+
+  <div class="score-btns">
+    <button class="score-btn" onclick="setScore('co',1,this)">1 — Needs improvement</button>
+    <button class="score-btn" onclick="setScore('co',3,this)">3 — Meets expectations</button>
+    <button class="score-btn" onclick="setScore('co',5,this)">5 — Exceeds expectations</button>
+  </div>
+
+  <textarea class="notes-input" id="notes-co" placeholder="What is missing or could be better?"></textarea>
+
+</div>
+
+<div class="rubric-card">
+  <div class="rc-title">Use your voice — communication clarity</div>
+  <div class="rc-desc">
+    Is the summary email clear, concise, and easy to skim? Does it preempt follow-up questions?
+  </div>
+
+  <details class="criteria-dropdown">
+    <summary>What do the scores mean?</summary>
+    <div class="criteria-content">
+      <p><strong>1 — Needs Improvement</strong><br>
+      Difficult to read, overly detailed, poorly organized, or missing important information.</p>
+
+  <p><strong>3 — Meets Expectations</strong><br>
+  Professional, organized, and communicates the necessary information clearly.</p>
+
+  <p><strong>5 — Exceeds Expectations</strong><br>
+  Highly concise, easy to skim, and proactively answers likely follow-up questions.</p>
+</div>
+
+  </details>
+
+  <div class="score-btns">
+    <button class="score-btn" onclick="setScore('uc',1,this)">1 — Needs improvement</button>
+    <button class="score-btn" onclick="setScore('uc',3,this)">3 — Meets expectations</button>
+    <button class="score-btn" onclick="setScore('uc',5,this)">5 — Exceeds expectations</button>
+  </div>
+
+  <textarea class="notes-input" id="notes-uc" placeholder="What would you change about the email?"></textarea>
+
+</div>
+
+<div class="rubric-card">
+  <div class="rc-title">Budget management</div>
+  <div class="rc-desc">
+    Did the submission stay within $3,800 with a clear breakdown and maximise value?
+  </div>
+
+  <details class="criteria-dropdown">
+    <summary>What do the scores mean?</summary>
+    <div class="criteria-content">
+      <p><strong>1 — Needs Improvement</strong><br>
+      Budget is unclear, incomplete, inaccurate, or exceeds the approved amount.</p>
+
+  <p><strong>3 — Meets Expectations</strong><br>
+  Costs are clearly documented and remain within budget.</p>
+
+  <p><strong>5 — Exceeds Expectations</strong><br>
+  Maximizes value while balancing executive preferences, convenience, and budget constraints.</p>
+</div>
+
+  </details>
+
+  <div class="score-btns">
+    <button class="score-btn" onclick="setScore('bm',1,this)">1 — Needs improvement</button>
+    <button class="score-btn" onclick="setScore('bm',3,this)">3 — Meets expectations</button>
+    <button class="score-btn" onclick="setScore('bm',5,this)">5 — Exceeds expectations</button>
+  </div>
+
+  <textarea class="notes-input" id="notes-bm" placeholder="Is the budget breakdown complete and well-structured?"></textarea>
+
+</div>
+
+<div class="rubric-card">
+  <div class="rc-title">Itinerary planning — technical execution</div>
+  <div class="rc-desc">
+    Is the itinerary complete, accurate, and proactive about potential disruptions?
+  </div>
+
+  <details class="criteria-dropdown">
+    <summary>What do the scores mean?</summary>
+    <div class="criteria-content">
+      <p><strong>1 — Needs Improvement</strong><br>
+      Missing critical details, contains errors, or leaves important arrangements unresolved.</p>
+
+  <p><strong>3 — Meets Expectations</strong><br>
+  Complete, accurate, and includes all required travel arrangements.</p>
+
+  <p><strong>5 — Exceeds Expectations</strong><br>
+  Thorough, proactive, and includes contingency planning for potential disruptions or changes.</p>
+</div>
+
+  </details>
+
+  <div class="score-btns">
+    <button class="score-btn" onclick="setScore('ip',1,this)">1 — Needs improvement</button>
+    <button class="score-btn" onclick="setScore('ip',3,this)">3 — Meets expectations</button>
+    <button class="score-btn" onclick="setScore('ip',5,this)">5 — Exceeds expectations</button>
+  </div>
+
+  <textarea class="notes-input" id="notes-ip" placeholder="What details are missing? Is there a contingency plan?"></textarea>
+
+</div>
     <div class="error-msg" id="score-error">Please score all four criteria before continuing.</div>
     <div class="btn-row">
       <button class="vt-btn-outline" onclick="goTo(1)">← Back</button>
