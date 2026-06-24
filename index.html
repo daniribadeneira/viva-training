@@ -301,7 +301,7 @@ async function gradeRevision() {
     document.getElementById('ai-result').classList.add('visible');
     document.getElementById('next-btn').style.display = 'inline-block';
   } catch(e) {
-    document.getElementById('ai-result-body').innerHTML = '<p style="color:#E24B4A;font-size:13px;font-weight:600;">Unable to connect to the AI grader. Please check your internet connection and try again.</p>';
+    document.getElementById('ai-result-body').innerHTML = '<p style="color:#E24B4A;font-size:13px;font-weight:600;">Error: ' + e.message + '</p>';
     document.getElementById('ai-result').classList.add('visible');
   }
   document.getElementById('loading').classList.remove('visible');
