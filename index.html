@@ -1,1 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viva University — Travel Management Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651; min-height: 100vh; }
+.vt-header { background: #051651; padding: 16px 36px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 100; }
+.vt-logo-text { color: #fff; font-size: 16px; font-weight: 700; }
+.vt-logo-sub { color: #8015E8; font-size: 11px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; margin-left: auto; }
+.vt-progress { background: #fff; border-bottom: 1px solid #e0e0e8; padding: 0 36px; display: flex; }
+.vt-step { padding: 14px 22px 12px; font-size: 12px; font-weight: 700; color: #aaa; border-bottom: 3px solid transparent; letter-spacing: 0.4px; cursor: default; }
+.vt-step.active { color: #8015E8; border-bottom-color: #8015E8; }
+.vt-step.done { color: #0a9c7a; border-bottom-color: #26F4CE; }
+.vt-container { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+.screen { display: none; }
+.screen.active { display: block; }
+.vt-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #8015E8; margin-bottom: 10px; }
+.vt-h1 { font-size: 28px; font-weight: 700; color: #051651; margin-bottom: 12px; line-height: 1.25; }
+.vt-lead { font-size: 15px; color: #444; line-height: 1.75; margin-bottom: 28px; max-width: 680px; }
+.scenario-box { background: #fff; border-left: 4px solid #8015E8; border-radius: 0 10px 10px 0; padding: 20px 24px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.scenario-box .s-label { font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #8015E8; margin-bottom: 10px; }
+.scenario-box p { font-size: 14px; color: #333; line-height: 1.75; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px; }
+.info-card { background: #fff; border-radius: 10px; padding: 16px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.info-card .ic-label { font-size: 11px; color: #888; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 5px; }
+.info-card .ic-val { font-size: 14px; font-weight: 700; color: #051651; }
+.vt-btn { background: #8015E8; color: #fff; border: none; border-radius: 8px; padding: 13px 30px; font-size: 14px; font-weight: 700; font-family: 'Open Sans', sans-serif; cursor: pointer; letter-spacing: 0.3px; transition: background 0.15s; }
+.vt-btn:hover { background: #6a11c4; }
+.vt-btn:disabled { background: #c0a0f0; cursor: not-allowed; }
+.vt-btn-outline { background: transparent; color: #8015E8; border: 2px solid #8015E8; border-radius: 8px; padding: 11px 24px; font-size: 13px; font-weight: 700; font-family: 'Open Sans', sans-serif; cursor: pointer; margin-right: 12px; transition: background 0.15s; }
+.vt-btn-outline:hover { background: #f0e8fd; }
+.section-title { font-size: 13px; font-weight: 700; color: #051651; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #e8e8f0; text-transform: uppercase; letter-spacing: 0.8px; }
+.itinerary-block { background: #fff; border: 1px solid #e0e0e8; border-radius: 12px; padding: 24px; margin-bottom: 28px; font-size: 14px; line-height: 1.8; color: #333; max-height: 380px; overflow-y: auto; }
+.itinerary-block h3 { font-size: 11px; font-weight: 700; color: #8015E8; margin: 18px 0 6px; text-transform: uppercase; letter-spacing: 1.2px; }
+.itinerary-block h3:first-child { margin-top: 0; }
+.itinerary-block p { margin-bottom: 4px; }
+.rubric-card { background: #fff; border: 1px solid #e0e0e8; border-radius: 12px; padding: 20px 22px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.rubric-card .rc-title { font-size: 14px; font-weight: 700; color: #051651; margin-bottom: 5px; }
+.rubric-card .rc-desc { font-size: 13px; color: #666; margin-bottom: 14px; line-height: 1.6; }
+.score-btns { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+.score-btn { padding: 8px 16px; border-radius: 7px; border: 1.5px solid #e0e0e8; background: #fff; font-size: 12px; font-weight: 700; cursor: pointer; color: #555; font-family: 'Open Sans', sans-serif; transition: all 0.12s; }
+.score-btn:hover { border-color: #8015E8; color: #8015E8; }
+.score-btn.selected-1 { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; }
+.score-btn.selected-3 { background: #fef9e7; border-color: #EF9F27; color: #854F0B; }
+.score-btn.selected-5 { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+.notes-input { width: 100%; border: 1px solid #e0e0e8; border-radius: 7px; padding: 10px 12px; font-size: 13px; font-family: 'Open Sans', sans-serif; color: #333; resize: vertical; min-height: 60px; transition: border-color 0.15s; }
+.notes-input:focus { outline: none; border-color: #8015E8; }
+.ai-badge { display: inline-flex; align-items: center; gap: 7px; background: #f0e8fd; border: 1px solid #c89efa; border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; color: #6a11c4; margin-bottom: 18px; letter-spacing: 0.3px; }
+.revision-area { width: 100%; border: 1px solid #e0e0e8; border-radius: 10px; padding: 16px 18px; font-size: 14px; font-family: 'Open Sans', sans-serif; color: #333; resize: vertical; min-height: 240px; line-height: 1.75; margin-bottom: 18px; transition: border-color 0.15s; }
+.revision-area:focus { outline: none; border-color: #8015E8; }
+.loading-indicator { display: none; align-items: center; gap: 12px; color: #8015E8; font-size: 14px; font-weight: 600; padding: 18px 0; }
+.loading-indicator.visible { display: flex; }
+.spinner { width: 20px; height: 20px; border: 2.5px solid #e0c8fd; border-top-color: #8015E8; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-result-card { background: #fff; border: 1px solid #e0e0e8; border-radius: 12px; padding: 22px 24px; margin-bottom: 20px; display: none; }
+.ai-result-card.visible { display: block; }
+.arc-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #8015E8; margin-bottom: 16px; }
+.ai-score-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #f0f0f5; }
+.ai-score-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.ai-score-pill { background: #051651; color: #fff; border-radius: 7px; padding: 5px 12px; font-size: 14px; font-weight: 700; min-width: 44px; text-align: center; flex-shrink: 0; }
+.ai-score-text { font-size: 13px; color: #333; line-height: 1.65; }
+.ai-score-text strong { color: #051651; font-weight: 700; display: block; margin-bottom: 2px; }
+.gap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+.gap-col-title { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #888; margin-bottom: 12px; }
+.gap-item { background: #fff; border: 1px solid #e0e0e8; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+.gap-item .gi-label { font-weight: 700; color: #051651; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.gap-item .gi-score { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.gap-item .gi-note { font-size: 12px; color: #666; line-height: 1.5; }
+.score-red { color: #E24B4A; }
+.score-amber { color: #EF9F27; }
+.score-green { color: #0a9c7a; }
+.reflection-box { background: #051651; border-radius: 12px; padding: 24px 26px; color: #fff; margin-bottom: 20px; }
+.reflection-box .rb-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #26F4CE; margin-bottom: 10px; }
+.reflection-box .rb-q { font-size: 16px; font-weight: 600; line-height: 1.5; margin-bottom: 16px; }
+.reflection-input { width: 100%; border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 12px 14px; font-size: 14px; font-family: 'Open Sans', sans-serif; background: rgba(255,255,255,0.1); color: #fff; resize: vertical; min-height: 90px; line-height: 1.6; }
+.reflection-input::placeholder { color: rgba(255,255,255,0.35); }
+.reflection-input:focus { outline: none; border-color: #26F4CE; }
+.next-card { background: #fff; border-radius: 12px; padding: 20px 24px; border-left: 5px solid #26F4CE; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.next-card .nc-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #0a9c7a; margin-bottom: 8px; }
+.next-card p { font-size: 14px; color: #333; line-height: 1.7; }
+.error-msg { font-size: 13px; color: #E24B4A; margin-top: 10px; display: none; font-weight: 600; }
+.btn-row { margin-top: 24px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+</style>
+</head>
+<body>
 
+<div class="vt-header">
+  <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+    <path d="M7 23L15 7L23 23" stroke="#8015E8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10 17H20" stroke="#8015E8" stroke-width="2.5" stroke-linecap="round"/>
+  </svg>
+  <span class="vt-logo-text">Viva University</span>
+  <span class="vt-logo-sub">Travel Management Training</span>
+</div>
+
+<div class="vt-progress">
+  <div class="vt-step active" id="step1">1. Context</div>
+  <div class="vt-step" id="step2">2. Review sample</div>
+  <div class="vt-step" id="step3">3. Improve your work</div>
+  <div class="vt-step" id="step4">4. Gap summary</div>
+</div>
+
+<div class="vt-container">
+
+  <div class="screen active" id="screen-1">
+    <div class="vt-eyebrow">Viva University — Travel Management</div>
+    <h1 class="vt-h1">From functional to exceptional</h1>
+    <p class="vt-lead">In this session you will sharpen the skills that separate a passing itinerary from an outstanding one. You will review a sample submission, identify what is missing, then apply that same critical eye to your own work — with AI as your grading partner.</p>
+    <div class="scenario-box">
+      <div class="s-label">The scenario</div>
+      <p>You work for <strong>Chelsey Olsen</strong>, CMO at Twilex. She is attending the SaaS Summit in Denver from <strong>February 20–23</strong> and wants to visit partner <strong>Rocket Labs</strong> on the 21st or 22nd. She flies out on the 7th and returns on the 10th. Budget: <strong>$3,800 USD</strong>. You must book flights (premium economy or business), hotel near the convention center, ground transport, summit registration, and the Rocket Labs meeting — then send her a clear summary email.</p>
+    </div>
+    <div class="info-grid">
+      <div class="info-card"><div class="ic-label">Budget</div><div class="ic-val">$3,800 USD maximum</div></div>
+      <div class="info-card"><div class="ic-label">Travel dates</div><div class="ic-val">Feb 7 → Feb 10</div></div>
+      <div class="info-card"><div class="ic-label">Event</div><div class="ic-val">SaaS Summit, Denver · Feb 20–23</div></div>
+      <div class="info-card"><div class="ic-label">Your task</div><div class="ic-val">Itinerary + expense report + summary email</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="vt-btn" onclick="goTo(2)">Start review →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-2">
+    <div class="vt-eyebrow">Step 1 of 3 — Review the sample</div>
+    <h1 class="vt-h1">Grade this itinerary</h1>
+    <p class="vt-lead">Read the submission below carefully. Score it on each rubric criterion and add your observations. The patterns you identify here will directly sharpen what you revise in your own work.</p>
+    <div class="section-title">Sample submission</div>
+    <div class="itinerary-block">
+      <h3>Flights</h3>
+      <p>Outbound: Feb 7 — United Airlines UA 1842, departing SFO 8:15 AM, arriving DEN 11:40 AM. Premium economy. Cost: $620.</p>
+      <p>Return: Feb 10 — United Airlines UA 1901, departing DEN 2:00 PM, arriving SFO 3:45 PM. Premium economy. Cost: $590.</p>
+      <p>Total flights: $1,210</p>
+      <h3>Hotel</h3>
+      <p>Courtyard by Marriott Denver Downtown — Feb 7–10, 3 nights. Approx. $180/night. Total: $540.</p>
+      <p>Note: Hotel is approximately 1.2 miles from the Colorado Convention Center.</p>
+      <h3>Ground transportation</h3>
+      <p>Uber or Lyft recommended for airport transfers and daily travel to the convention center. Estimated cost: $150.</p>
+      <h3>Summit registration</h3>
+      <p>SaaS Summit general admission registration. Cost: $800.</p>
+      <h3>Rocket Labs meeting</h3>
+      <p>Meeting to be scheduled with Rocket Labs on either Feb 21 or 22. Location and time TBD.</p>
+      <h3>Expense summary</h3>
+      <p>Flights: $1,210 | Hotel: $540 | Transport: $150 | Registration: $800</p>
+      <p>Total estimated: $2,700 | Remaining budget: $1,100</p>
+      <h3>Summary email to Chelsey</h3>
+      <p>Hi Chelsey,</p>
+      <p>I hope this message finds you well. I wanted to reach out to let you know that I have been working diligently on your travel arrangements for the upcoming SaaS Summit in Denver, Colorado and I believe I have put together a solid plan that I would like to share with you in detail.</p>
+      <p>For your outbound journey, I have secured a premium economy seat on United Airlines flight UA 1842, which departs from San Francisco International Airport at 8:15 in the morning on February 7th and arrives in Denver at 11:40 AM. For your return, you will be on United Airlines flight UA 1901, departing Denver at 2:00 PM on February 10th and arriving back in San Francisco at 3:45 PM. Your hotel is the Courtyard by Marriott Denver Downtown at approximately $180 per night for three nights. The summit registration has also been arranged at a cost of $800 for general admission. Regarding the Rocket Labs visit, I will follow up once a date is confirmed. For transportation during your stay, I would suggest using Uber or Lyft for convenience. The total estimated cost for all arrangements comes to approximately $2,700, which is within your $3,800 budget. Please let me know if you would like any changes or have any questions about the itinerary.</p>
+      <p>Best regards</p>
+    </div>
+    <div class="section-title">Your scores</div>
+    <div class="rubric-card">
+      <div class="rc-title">Customer obsession — ability to meet user requests</div>
+      <div class="rc-desc">Did the itinerary anticipate Chelsey's unspoken needs and optimise for her efficiency and comfort?</div>
+      <div class="score-btns">
+        <button class="score-btn" onclick="setScore('co',1,this)">1 — Needs improvement</button>
+        <button class="score-btn" onclick="setScore('co',3,this)">3 — Meets expectations</button>
+        <button class="score-btn" onclick="setScore('co',5,this)">5 — Exceeds expectations</button>
+      </div>
+      <textarea class="notes-input" id="notes-co" placeholder="What is missing or could be better?"></textarea>
+    </div>
+    <div class="rubric-card">
+      <div class="rc-title">Use your voice — communication clarity</div>
+      <div class="rc-desc">Is the summary email clear, concise, and easy to skim? Does it preempt follow-up questions?</div>
+      <div class="score-btns">
+        <button class="score-btn" onclick="setScore('uc',1,this)">1 — Needs improvement</button>
+        <button class="score-btn" onclick="setScore('uc',3,this)">3 — Meets expectations</button>
+        <button class="score-btn" onclick="setScore('uc',5,this)">5 — Exceeds expectations</button>
+      </div>
+      <textarea class="notes-input" id="notes-uc" placeholder="What would you change about the email?"></textarea>
+    </div>
+    <div class="rubric-card">
+      <div class="rc-title">Budget management</div>
+      <div class="rc-desc">Did the submission stay within $3,800 with a clear breakdown and maximise value?</div>
+      <div class="score-btns">
+        <button class="score-btn" onclick="setScore('bm',1,this)">1 — Needs improvement</button>
+        <button class="score-btn" onclick="setScore('bm',3,this)">3 — Meets expectations</button>
+        <button class="score-btn" onclick="setScore('bm',5,this)">5 — Exceeds expectations</button>
+      </div>
+      <textarea class="notes-input" id="notes-bm" placeholder="Is the budget breakdown complete and well-structured?"></textarea>
+    </div>
+    <div class="rubric-card">
+      <div class="rc-title">Itinerary planning — technical execution</div>
+      <div class="rc-desc">Is the itinerary complete, accurate, and proactive about potential disruptions?</div>
+      <div class="score-btns">
+        <button class="score-btn" onclick="setScore('ip',1,this)">1 — Needs improvement</button>
+        <button class="score-btn" onclick="setScore('ip',3,this)">3 — Meets expectations</button>
+        <button class="score-btn" onclick="setScore('ip',5,this)">5 — Exceeds expectations</button>
+      </div>
+      <textarea class="notes-input" id="notes-ip" placeholder="What details are missing? Is there a contingency plan?"></textarea>
+    </div>
+    <div class="error-msg" id="score-error">Please score all four criteria before continuing.</div>
+    <div class="btn-row">
+      <button class="vt-btn-outline" onclick="goTo(1)">← Back</button>
+      <button class="vt-btn" onclick="submitReview()">Save and continue →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-3">
+    <div class="vt-eyebrow">Step 2 of 3 — Improve your work</div>
+    <h1 class="vt-h1">Revise your original itinerary</h1>
+    <p class="vt-lead">Using what you identified in the sample, revise your own submission. Address the gaps you spotted — especially around anticipation, contingency planning, budget clarity, and email conciseness. Paste your revised version below, then get AI feedback.</p>
+    <div class="ai-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6a11c4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      AI grader — powered by Claude
+    </div>
+    <textarea class="revision-area" id="revision-text" placeholder="Paste your revised itinerary here. Include flights, hotel, ground transport, summit registration, Rocket Labs meeting details, a full expense breakdown, and your summary email to Chelsey..."></textarea>
+    <div class="loading-indicator" id="loading">
+      <div class="spinner"></div>
+      Reviewing your submission...
+    </div>
+    <div class="ai-result-card" id="ai-result">
+      <div class="arc-title">AI feedback — scored against the rubric</div>
+      <div id="ai-result-body"></div>
+    </div>
+    <div class="error-msg" id="revision-error">Please paste your revised itinerary before requesting feedback.</div>
+    <div class="btn-row">
+      <button class="vt-btn-outline" onclick="goTo(2)">← Back</button>
+      <button class="vt-btn" id="grade-btn" onclick="gradeRevision()">Get AI feedback →</button>
+      <button class="vt-btn" id="next-btn" style="display:none;" onclick="goToSummary()">See my gap summary →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-4">
+    <div class="vt-eyebrow">Step 3 of 3 — Gap summary</div>
+    <h1 class="vt-h1">Where you stand</h1>
+    <p class="vt-lead">Here is how your scores compare: how you graded the sample versus how AI graded your revision. The gap between them is where your growth is.</p>
+    <div class="gap-grid" id="gap-grid"></div>
+    <div class="reflection-box">
+      <div class="rb-label">Reflection</div>
+      <div class="rb-q">Based on this session, what is the one thing you would change before attempting the next scenario?</div>
+      <textarea class="reflection-input" placeholder="Write your reflection here..."></textarea>
+    </div>
+    <div class="next-card">
+      <div class="nc-label">What comes next</div>
+      <p>The next scenario introduces a live disruption — a flight cancellation and a venue change on day one. You will need to respond in real time, applying everything from this session. The executives who score highest are those who planned for what could go wrong before it did.</p>
+    </div>
+    <div class="btn-row">
+      <button class="vt-btn-outline" onclick="goTo(3)">← Back</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const scores = { co: null, uc: null, bm: null, ip: null };
+const aiScores = { co: null, uc: null, bm: null, ip: null };
+const labels = { co: 'Customer obsession', uc: 'Communication clarity', bm: 'Budget management', ip: 'Itinerary planning' };
+
+function goTo(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + n).classList.add('active');
+  ['step1','step2','step3','step4'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.className = 'vt-step';
+    if (i + 1 < n) el.classList.add('done');
+    if (i + 1 === n) el.classList.add('active');
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setScore(key, val, btn) {
+  scores[key] = val;
+  btn.closest('.score-btns').querySelectorAll('.score-btn').forEach(b => b.className = 'score-btn');
+  btn.classList.add('selected-' + val);
+}
+
+function submitReview() {
+  if (Object.values(scores).some(v => v === null)) { document.getElementById('score-error').style.display = 'block'; return; }
+  document.getElementById('score-error').style.display = 'none';
+  goTo(3);
+}
+
+async function gradeRevision() {
+  const text = document.getElementById('revision-text').value.trim();
+  if (!text || text.length < 50) { document.getElementById('revision-error').style.display = 'block'; return; }
+  document.getElementById('revision-error').style.display = 'none';
+  document.getElementById('loading').classList.add('visible');
+  document.getElementById('ai-result').classList.remove('visible');
+  document.getElementById('grade-btn').disabled = true;
+  document.getElementById('next-btn').style.display = 'none';
+
+  const prompt = `You are a Viva University assessor evaluating an executive assistant's travel management submission. Score on these 4 criteria, each from 1 to 5:\n1. Customer Obsession: Did they anticipate unspoken needs, optimize for exec comfort and efficiency?\n2. Communication Clarity: Is the summary email concise, structured, and proactive — easy to skim, under 200 words?\n3. Budget Management: Did they stay within $3,800 with a clear categorized breakdown and maximize value?\n4. Itinerary Planning: Is it complete, accurate, and does it include contingency plans for delays or disruptions?\n\nRespond ONLY in this exact JSON format, no extra text:\n{"co":{"score":NUMBER,"feedback":"ONE specific sentence"},"uc":{"score":NUMBER,"feedback":"ONE specific sentence"},"bm":{"score":NUMBER,"feedback":"ONE specific sentence"},"ip":{"score":NUMBER,"feedback":"ONE specific sentence"}}\n\nSubmission:\n${text.substring(0, 2500)}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 800, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await res.json();
+    const raw = data.content.find(b => b.type === 'text')?.text || '';
+    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    aiScores.co = parsed.co.score; aiScores.uc = parsed.uc.score; aiScores.bm = parsed.bm.score; aiScores.ip = parsed.ip.score;
+    document.getElementById('ai-result-body').innerHTML = ['co','uc','bm','ip'].map(k => `<div class="ai-score-row"><div class="ai-score-pill">${parsed[k].score}/5</div><div class="ai-score-text"><strong>${labels[k]}</strong>${parsed[k].feedback}</div></div>`).join('');
+    document.getElementById('ai-result').classList.add('visible');
+    document.getElementById('next-btn').style.display = 'inline-block';
+  } catch(e) {
+    document.getElementById('ai-result-body').innerHTML = '<p style="color:#E24B4A;font-size:13px;font-weight:600;">Unable to connect to the AI grader. Please check your internet connection and try again.</p>';
+    document.getElementById('ai-result').classList.add('visible');
+  }
+  document.getElementById('loading').classList.remove('visible');
+  document.getElementById('grade-btn').disabled = false;
+}
+
+function goToSummary() {
+  const sc = s => s >= 4 ? 'score-green' : s === 3 ? 'score-amber' : 'score-red';
+  document.getElementById('gap-grid').innerHTML = `
+    <div>
+      <div class="gap-col-title">How you graded the sample</div>
+      ${['co','uc','bm','ip'].map(k => `<div class="gap-item"><div class="gi-label">${labels[k]}</div><div class="gi-score ${sc(scores[k])}">${scores[k]}/5</div><div class="gi-note">${document.getElementById('notes-'+k).value || 'No notes added'}</div></div>`).join('')}
+    </div>
+    <div>
+      <div class="gap-col-title">AI score on your revision</div>
+      ${['co','uc','bm','ip'].map(k => `<div class="gap-item"><div class="gi-label">${labels[k]}</div><div class="gi-score ${aiScores[k] ? sc(aiScores[k]) : ''}">${aiScores[k] ? aiScores[k]+'/5' : '—'}</div><div class="gi-note">${aiScores[k] ? 'AI graded your revised submission' : 'Not yet graded'}</div></div>`).join('')}
+    </div>`;
+  goTo(4);
+}
+</script>
+</body>
+</html>
