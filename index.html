@@ -288,13 +288,9 @@ async function gradeRevision() {
   const prompt = `You are a Viva University assessor evaluating an executive assistant's travel management submission. Score on these 4 criteria, each from 1 to 5:\n1. Customer Obsession: Did they anticipate unspoken needs, optimize for exec comfort and efficiency?\n2. Communication Clarity: Is the summary email concise, structured, and proactive — easy to skim, under 200 words?\n3. Budget Management: Did they stay within $3,800 with a clear categorized breakdown and maximize value?\n4. Itinerary Planning: Is it complete, accurate, and does it include contingency plans for delays or disruptions?\n\nRespond ONLY in this exact JSON format, no extra text:\n{"co":{"score":NUMBER,"feedback":"ONE specific sentence"},"uc":{"score":NUMBER,"feedback":"ONE specific sentence"},"bm":{"score":NUMBER,"feedback":"ONE specific sentence"},"ip":{"score":NUMBER,"feedback":"ONE specific sentence"}}\n\nSubmission:\n${text.substring(0, 2500)}`;
 
   try {
-    const res = await fetch('https://viva-proxy.daniela-ribadeneira.workers.dev/', {
+    const res = await fetch('/.netlify/functions/grade', {
       method: 'POST',
-      headers: {
-  'Content-Type': 'application/json',
-  'x-api-key': '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',
-  'anthropic-version': '2023-06-01',
-},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 800, messages: [{ role: 'user', content: prompt }] })
     });
     const data = await res.json();
