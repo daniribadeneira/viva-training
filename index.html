@@ -125,6 +125,22 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
 </head>
 <body>
 
+  <form name="session-results" netlify hidden>
+  <input name="trainee-name" />
+  <input name="notes-co" />
+  <input name="notes-uc" />
+  <input name="notes-bm" />
+  <input name="notes-ip" />
+  <input name="ai-score-co" />
+  <input name="ai-score-uc" />
+  <input name="ai-score-bm" />
+  <input name="ai-score-ip" />
+  <input name="ai-feedback-co" />
+  <input name="ai-feedback-uc" />
+  <input name="ai-feedback-bm" />
+  <input name="ai-feedback-ip" />
+  <input name="reflection" />
+</form>
 <div class="vt-header">
   <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
     <path d="M7 23L15 7L23 23" stroke="#8015E8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -375,30 +391,43 @@ body { font-family: 'Open Sans', sans-serif; background: #f5f5f7; color: #051651
     </div>
   </div>
 
-  <div class="screen" id="screen-5">
-    <div class="vt-eyebrow">Step 3 of 4 — Gap summary</div>
-    <h1 class="vt-h1">Where you stand</h1>
-    <p class="vt-lead">Here is how your scores compare: how you graded the sample versus how AI graded your revision. The gap between them is where your growth is.</p>
-    <div class="gap-grid" id="gap-grid"></div>
-    <div class="reflection-box">
-      <div class="rb-label">Reflection</div>
-      <div class="rb-q">After completing this exercise, do you feel more confident creating travel plans that anticipate an executive's needs? Why or why not?</div>
-      <textarea class="reflection-input" placeholder="Write your reflection here..."></textarea>
-    </div>
-    <div class="next-card">
-      <div class="nc-label">Thank you!</div>
-      <p>Thank you for completing this session. Use what you practiced today to become a stronger, more proactive partner for your executive. The difference between functional and exceptional lives in the details — and now you know where to look.</p>
-    </div>
-    <div class="btn-row">
-      <button class="vt-btn-outline" onclick="goTo(4)">← Back</button>
-    </div>
+ <div class="screen" id="screen-5">
+  <div class="vt-eyebrow">Step 5 of 5 — Gap summary</div>
+  <h1 class="vt-h1">Where you stand</h1>
+  <p class="vt-lead">Here is how your scores compare: how you graded the sample versus how AI graded your revision. The gap between them is where your growth is.</p>
+
+  <div class="gap-grid" id="gap-grid"></div>
+
+  <div class="reflection-box">
+    <div class="rb-label">Your name (optional)</div>
+    <input type="text" id="trainee-name" placeholder="First and last name" style="width:100%; border:1px solid rgba(255,255,255,0.25); border-radius:8px; padding:12px 14px; font-size:14px; font-family:'Open Sans',sans-serif; background:rgba(255,255,255,0.1); color:#fff; margin-bottom:16px;">
+    <div class="rb-label">Reflection</div>
+    <div class="rb-q">After completing this exercise, do you feel more confident creating travel plans that anticipate an executive's needs? Why or why not?</div>
+    <textarea class="reflection-input" id="reflection-text" placeholder="Write your reflection here..."></textarea>
   </div>
 
+  <div id="submit-success" style="display:none; background:#EAF3DE; border:1px solid #639922; border-radius:10px; padding:16px 20px; margin-bottom:20px; font-size:14px; color:#3B6D11; font-weight:600;">
+    Your response has been submitted. Thank you.
+  </div>
+
+  <div class="error-msg" id="submit-error">Something went wrong. Please try again.</div>
+
+  <div class="next-card" style="margin-bottom:20px;">
+    <div class="nc-label">Thank you!</div>
+    <p>Thank you for completing this session. Use what you practiced today to become a stronger, more proactive partner for your executive. The difference between functional and exceptional lives in the details — and now you know where to look.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="vt-btn-outline" onclick="goTo(4)">← Back</button>
+    <button class="vt-btn" onclick="submitResults()">Submit my results →</button>
+  </div>
+</div>
 </div>
 
 <script>
 const scores = { co: null, uc: null, bm: null, ip: null };
 const aiScores = { co: null, uc: null, bm: null, ip: null };
+const aiFeedback = { co: '', uc: '', bm: '', ip: '' };
 const labels = { co: 'Customer obsession', uc: 'Communication clarity', bm: 'Budget management', ip: 'Itinerary planning' };
 
 function goTo(n) {
@@ -446,6 +475,7 @@ async function gradeRevision() {
     const raw = data.content.find(b => b.type === 'text')?.text || '';
     const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
     aiScores.co = parsed.co.score; aiScores.uc = parsed.uc.score; aiScores.bm = parsed.bm.score; aiScores.ip = parsed.ip.score;
+    aiFeedback.co = parsed.co.feedback; aiFeedback.uc = parsed.uc.feedback; aiFeedback.bm = parsed.bm.feedback; aiFeedback.ip = parsed.ip.feedback;
     document.getElementById('ai-result-body').innerHTML = ['co','uc','bm','ip'].map(k => `<div class="ai-score-row"><div class="ai-score-pill">${parsed[k].score}/5</div><div class="ai-score-text"><strong>${labels[k]}</strong>${parsed[k].feedback}</div></div>`).join('');
     document.getElementById('ai-result').classList.add('visible');
     document.getElementById('next-btn').style.display = 'inline-block';
@@ -469,6 +499,41 @@ function goToSummary() {
       ${['co','uc','bm','ip'].map(k => `<div class="gap-item"><div class="gi-label">${labels[k]}</div><div class="gi-score ${aiScores[k] ? sc(aiScores[k]) : ''}">${aiScores[k] ? aiScores[k]+'/5' : '—'}</div><div class="gi-note">${aiScores[k] ? 'AI graded your revised submission' : 'Not yet graded'}</div></div>`).join('')}
     </div>`;
   goTo(5);
+}
+
+async function submitResults() {
+  const reflection = document.getElementById('reflection-text').value.trim();
+  const errEl = document.getElementById('submit-error');
+  errEl.style.display = 'none';
+
+  const formData = new FormData();
+  formData.append('form-name', 'session-results');
+  formData.append('trainee-name', document.getElementById('trainee-name').value.trim() || 'Anonymous');
+  formData.append('notes-co', document.getElementById('notes-co').value || '');
+  formData.append('notes-uc', document.getElementById('notes-uc').value || '');
+  formData.append('notes-bm', document.getElementById('notes-bm').value || '');
+  formData.append('notes-ip', document.getElementById('notes-ip').value || '');
+  formData.append('ai-score-co', aiScores.co || '');
+  formData.append('ai-score-uc', aiScores.uc || '');
+  formData.append('ai-score-bm', aiScores.bm || '');
+  formData.append('ai-score-ip', aiScores.ip || '');
+  formData.append('ai-feedback-co', aiFeedback.co || '');
+  formData.append('ai-feedback-uc', aiFeedback.uc || '');
+  formData.append('ai-feedback-bm', aiFeedback.bm || '');
+  formData.append('ai-feedback-ip', aiFeedback.ip || '');
+  formData.append('reflection', reflection || '');
+
+  try {
+    const res = await fetch('/', { method: 'POST', body: formData });
+    if (res.ok) {
+      document.getElementById('submit-success').style.display = 'block';
+      document.querySelector('#screen-5 .btn-row').style.display = 'none';
+    } else {
+      errEl.style.display = 'block';
+    }
+  } catch(e) {
+    errEl.style.display = 'block';
+  }
 }
 </script>
 </body>
